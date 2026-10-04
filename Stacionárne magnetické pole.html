@@ -1,0 +1,983 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Stacionárne magnetické pole</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=STIX+Two+Text:ital,wght@0,400;0,600;1,400;1,600&display=swap">
+<style>
+/* Layout: one reading column on faint graph paper (like the notebook); teal = highlighter from the notes,
+   red = severný pól (S), blue = južný pól (J); amber boxes = doplnené, red boxes = oprava zošita. Always light. */
+:root {
+  color-scheme: light;
+  --paper: #f7f9f8;
+  --grid: #e6eeec;
+  --surface: #ffffff;
+  --ink: #18242a;
+  --muted: #56656b;
+  --line: #d6e0de;
+  --teal: #0b6a5b;
+  --teal-soft: #d4f1e9;
+  --mark: #bfeedd;
+  --north: #c23a32;
+  --north-soft: #fbe6e4;
+  --south: #2457a8;
+  --south-soft: #e4ecf8;
+  --add: #8a5a00;
+  --add-soft: #fdf3dc;
+  --fix: #b0302a;
+  --fix-soft: #fdeceb;
+  --font-head: "Bricolage Grotesque", "Avenir Next", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "Source Sans 3", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --font-math: "STIX Two Text", "Cambria Math", "Times New Roman", serif;
+}
+
+* { box-sizing: border-box; }
+html { background: var(--paper); }
+body {
+  background-color: var(--paper);
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 24px 24px;
+  color: var(--ink);
+  font-family: var(--font-body); font-size: 1.08rem; line-height: 1.65;
+  padding: 0 16px;
+}
+.wrap { max-width: 47rem; margin: 0 auto; padding-block: 40px 96px; }
+
+h1, h2, h3, h4 { font-family: var(--font-head); line-height: 1.15; text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(2.2rem, 7vw, 3.4rem); font-weight: 800; letter-spacing: -0.02em; }
+h2 { font-size: clamp(1.5rem, 4vw, 1.9rem); font-weight: 800; letter-spacing: -0.01em; }
+h3 { font-size: 1.22rem; font-weight: 600; margin-top: 2.2rem; margin-bottom: 0.4rem; }
+h4 { font-size: 1.02rem; font-weight: 600; margin-top: 1.2rem; margin-bottom: 0.2rem; }
+p { margin: 0.6rem 0; }
+ul, ol { padding-left: 1.3rem; margin: 0.5rem 0; }
+li { margin: 0.25rem 0; }
+a { color: var(--teal); }
+a:focus-visible, summary:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; border-radius: 3px; }
+strong { font-weight: 700; }
+mark { background: var(--mark); color: inherit; padding: 0 0.15em; border-radius: 3px; }
+.n { color: var(--north); font-weight: 700; }
+.s { color: var(--south); font-weight: 700; }
+
+.eyebrow { font-family: var(--font-head); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--teal); font-weight: 600; }
+.lead { color: var(--muted); font-size: 1.1rem; margin-top: 0.8rem; max-width: 38rem; }
+
+header { padding-bottom: 1.6rem; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 1.2rem; font-size: 0.92rem; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.sw { width: 14px; height: 14px; border-radius: 3px; display: inline-block; border: 1px solid var(--line); }
+
+.toc { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px 22px; margin-top: 1.6rem; }
+.toc ol { columns: 2 15rem; column-gap: 2rem; margin: 0.4rem 0 0; padding-left: 1.4rem; }
+.toc li { break-inside: avoid; }
+.toc a { color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--line); }
+.toc a:hover { border-color: var(--teal); }
+
+section.ch { margin-top: 3.6rem; padding-top: 1.4rem; border-top: 3px solid var(--teal); scroll-margin-top: 16px; }
+section.ch > .eyebrow { display: block; margin-bottom: 0.3rem; }
+
+/* math */
+.m { font-family: var(--font-math); font-size: 1.08em; white-space: nowrap; }
+.m i { font-style: italic; }
+.f {
+  font-family: var(--font-math); font-size: 1.32rem; text-align: center;
+  background: var(--surface); border: 2px solid var(--teal); border-radius: 10px;
+  padding: 14px 16px; margin: 1rem auto; width: fit-content; max-width: 100%;
+  overflow-x: auto;
+}
+.f i { font-style: italic; }
+.f .cap { display: block; font-family: var(--font-body); font-size: 0.85rem; color: var(--muted); margin-top: 6px; white-space: normal; }
+.frac { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; line-height: 1.2; margin: 0 0.15em; }
+.frac > span:first-child { border-bottom: 1.4px solid currentColor; padding: 0 0.25em 1px; }
+.frac > span:last-child { padding-top: 1px; }
+
+.vars { display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; margin: 0.6rem 0 1rem; font-size: 0.98rem; }
+.vars dt { font-family: var(--font-math); font-style: italic; font-size: 1.08rem; text-align: right; }
+.vars dd { margin: 0; min-width: 0; }
+
+/* callouts */
+.box { border-radius: 8px; padding: 12px 16px; margin: 1.1rem 0; border: 1px solid var(--line); background: var(--surface); }
+.box > .tag { display: block; font-family: var(--font-head); font-size: 0.95rem; font-weight: 600; margin-bottom: 2px; }
+.box p:first-of-type { margin-top: 0.2rem; }
+.box p:last-child, .box ul:last-child, .box ol:last-child { margin-bottom: 0.2rem; }
+.box.add { background: var(--add-soft); border-color: #f0dcae; }
+.box.add > .tag { color: var(--add); }
+.box.fix { background: var(--fix-soft); border-color: #f2c8c4; }
+.box.fix > .tag { color: var(--fix); }
+.box.q { background: var(--teal-soft); border-color: #a9dfd0; }
+.box.q > .tag { color: var(--teal); }
+.box.key { border: 2px solid var(--ink); }
+.box.key > .tag { color: var(--ink); }
+
+figure { margin: 1.3rem 0; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px; overflow-x: auto; }
+figure svg { display: block; width: 100%; height: auto; min-width: 300px; }
+figcaption { font-size: 0.9rem; color: var(--muted); margin-top: 6px; padding: 0 4px; }
+svg text { font-family: var(--font-body); }
+
+.steps { counter-reset: st; list-style: none; padding-left: 0; }
+.steps li { counter-increment: st; position: relative; padding-left: 2.1rem; margin: 0.45rem 0; }
+.steps li::before { content: counter(st); position: absolute; left: 0; top: 0.1rem; width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--teal); color: #fff; font-family: var(--font-head); font-size: 0.85rem; font-weight: 600; display: grid; place-items: center; }
+
+.tbl { overflow-x: auto; margin: 1rem 0; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
+table { border-collapse: collapse; width: 100%; font-size: 0.97rem; }
+th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-family: var(--font-head); font-weight: 600; font-size: 0.88rem; color: var(--muted); background: #f1f6f5; }
+tr:last-child td { border-bottom: 0; }
+td.fm { font-family: var(--font-math); font-size: 1.1rem; white-space: nowrap; }
+td.fm i { font-style: italic; }
+
+/* exercises */
+.ex { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 18px; margin: 0.9rem 0; }
+.ex h4 { margin: 0 0 0.3rem; display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.ex h4 .lvl { font-family: var(--font-body); font-size: 0.78rem; font-weight: 600; padding: 1px 8px; border-radius: 99px; background: var(--teal-soft); color: var(--teal); }
+.ex h4 .lvl.z { background: var(--south-soft); color: var(--south); }
+.ex h4 .lvl.b { background: var(--add-soft); color: var(--add); }
+details { margin-top: 0.6rem; }
+summary { cursor: pointer; font-weight: 600; color: var(--teal); width: fit-content; }
+details[open] summary { margin-bottom: 0.4rem; }
+.sol { background: #f1f7f5; border-radius: 6px; padding: 6px 14px; }
+.ans { display: inline-block; font-family: var(--font-math); font-weight: 600; background: var(--mark); padding: 1px 8px; border-radius: 4px; }
+
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); gap: 12px; margin: 1rem 0; }
+.two > div { min-width: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 16px; }
+.two h4 { margin-top: 0; }
+
+footer { margin-top: 4rem; color: var(--muted); font-size: 0.9rem; border-top: 1px solid var(--line); padding-top: 1rem; }
+
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+</style>
+
+<div class="wrap">
+
+<header>
+  <span class="eyebrow">Fyzika · magnetizmus</span>
+  <h1>Stacionárne magnetické pole</h1>
+  <p class="lead">Všetko zo zošita prepísané a vysvetlené: magnety, pole Zeme, vodič s prúdom, Ampérov zákon, nabitá častica v magnetickom poli a kde sa to využíva. Na konci ťahák vzorcov a príklady s riešeniami.</p>
+  <div class="legend">
+    <span><i class="sw" style="background:var(--mark)"></i>zvýraznené ako v zošite</span>
+    <span><i class="sw" style="background:var(--add-soft)"></i>doplnené (v zošite chýba)</span>
+    <span><i class="sw" style="background:var(--fix-soft)"></i>oprava zošita</span>
+    <span><i class="sw" style="background:var(--teal-soft)"></i>odpoveď na otázku zo zošita</span>
+  </div>
+  <nav class="toc" aria-label="Obsah">
+    <span class="eyebrow">Obsah</span>
+    <ol>
+      <li><a href="#magnety">Magnety a magnetické póly</a></li>
+      <li><a href="#ciary">Indukčné čiary</a></li>
+      <li><a href="#zem">Magnetické pole Zeme</a></li>
+      <li><a href="#vodic">Vodič s prúdom (Oersted, APPR, cievka)</a></li>
+      <li><a href="#sila">Vodič s prúdom v magnetickom poli</a></li>
+      <li><a href="#rovnobezne">Rovnobežné vodiče s prúdom</a></li>
+      <li><a href="#ampere">Ampérov zákon a definícia ampéra</a></li>
+      <li><a href="#castica">Častica s nábojom v magnetickom poli</a></li>
+      <li><a href="#vyuzitie">Využitie v praxi</a></li>
+      <li><a href="#tahak">Ťahák vzorcov</a></li>
+      <li><a href="#priklady">Príklady na precvičenie</a></li>
+    </ol>
+  </nav>
+</header>
+
+<!-- 1 -->
+<section class="ch" id="magnety">
+  <span class="eyebrow">Kapitola 1</span>
+  <h2>Magnety a magnetické póly</h2>
+
+  <p><strong>Stacionárne magnetické pole</strong> je magnetické pole, ktoré sa s časom <mark>nemení</mark>. Vzniká v okolí:</p>
+  <ul>
+    <li>nepohybujúcich sa <strong>permanentných magnetov</strong>,</li>
+    <li>nepohybujúcich sa <strong>vodičov so stálym prúdom</strong>, teda prúdom, ktorý sa nemení a je stále rovnako veľký (napr. obvod napájaný z batérie).</li>
+  </ul>
+
+  <h3>Prírodný magnet</h3>
+  <p>Prírodný magnet je <mark>magnetovec (magnetit)</mark>, nerast zo železa (Fe₃O₄), ktorý priťahuje železné predmety.</p>
+  <p>Každý magnet má dva póly:</p>
+  <ul>
+    <li><span class="n">S</span> = <strong>severný pól</strong> (na obrázkoch zvyčajne červený),</li>
+    <li><span class="s">J</span> = <strong>južný pól</strong> (zvyčajne modrý).</li>
+  </ul>
+  <p>V strede tyčového magnetu je <strong>neutrálne pásmo</strong>. Tam magnet takmer nepriťahuje.</p>
+
+  <h3>Magnetický dipól</h3>
+  <p><mark>Magnetický dipól</mark>: severný a južný pól existujú <strong>vždy spolu</strong>. Je to kvôli usporiadaniu atómov: každý atóm sa správa ako malilinký magnet a v magnete sú tieto „magnetíky“ natočené rovnakým smerom.</p>
+  <p>Preto keď magnet <strong>zlomíš</strong>, nevznikne samostatný pól S a samostatný pól J. Vzniknú <strong>dva menšie magnety</strong>, každý so svojím S aj J.</p>
+
+  <figure>
+    <svg viewBox="0 0 560 120" role="img" aria-label="Zlomený magnet: z magnetu J-S vzniknú dva magnety J-S a J-S">
+      <rect x="20" y="40" width="80" height="40" fill="var(--south-soft)" stroke="var(--south)" stroke-width="2"/>
+      <rect x="100" y="40" width="80" height="40" fill="var(--north-soft)" stroke="var(--north)" stroke-width="2"/>
+      <text x="60" y="67" text-anchor="middle" font-size="20" font-weight="700" fill="var(--south)">J</text>
+      <text x="140" y="67" text-anchor="middle" font-size="20" font-weight="700" fill="var(--north)">S</text>
+      <path d="M200 60 L250 60" stroke="var(--ink)" stroke-width="2" fill="none"/>
+      <path d="M242 54 L252 60 L242 66" stroke="var(--ink)" stroke-width="2" fill="none"/>
+      <text x="225" y="48" text-anchor="middle" font-size="13" fill="var(--muted)">zlomím</text>
+      <rect x="270" y="40" width="50" height="40" fill="var(--south-soft)" stroke="var(--south)" stroke-width="2"/>
+      <rect x="320" y="40" width="50" height="40" fill="var(--north-soft)" stroke="var(--north)" stroke-width="2"/>
+      <text x="295" y="67" text-anchor="middle" font-size="18" font-weight="700" fill="var(--south)">J</text>
+      <text x="345" y="67" text-anchor="middle" font-size="18" font-weight="700" fill="var(--north)">S</text>
+      <rect x="400" y="40" width="50" height="40" fill="var(--south-soft)" stroke="var(--south)" stroke-width="2"/>
+      <rect x="450" y="40" width="50" height="40" fill="var(--north-soft)" stroke="var(--north)" stroke-width="2"/>
+      <text x="425" y="67" text-anchor="middle" font-size="18" font-weight="700" fill="var(--south)">J</text>
+      <text x="475" y="67" text-anchor="middle" font-size="18" font-weight="700" fill="var(--north)">S</text>
+      <text x="385" y="104" text-anchor="middle" font-size="13" fill="var(--muted)">dva celé magnety, nie dva samostatné póly</text>
+    </svg>
+    <figcaption>Samostatný severný alebo južný pól (tzv. monopól) sa v prírode nikdy nenašiel.</figcaption>
+  </figure>
+
+  <h3>Ako na seba póly pôsobia</h3>
+  <div class="two">
+    <div><h4>Súhlasné póly</h4><p style="margin:0">J a J, alebo S a S <br><strong>sa odpudzujú</strong></p></div>
+    <div><h4>Nesúhlasné póly</h4><p style="margin:0">S a J <br><strong>sa priťahujú</strong></p></div>
+  </div>
+</section>
+
+<!-- 2 -->
+<section class="ch" id="ciary">
+  <span class="eyebrow">Kapitola 2</span>
+  <h2>Indukčné čiary</h2>
+
+  <p>Magnetické pole nevidíme, preto ho <mark>znázorňujeme pomocou magnetických indukčných čiar</mark>.</p>
+  <p><strong>Indukčná čiara</strong> je <mark>myslená čiara</mark>, ktorá ukazuje, aký tvar má pole. Ak do poľa položíš malú magnetku (kompas), natočí sa v smere dotyčnice k indukčnej čiare.</p>
+
+  <div class="box key">
+    <span class="tag">Zapamätaj si</span>
+    <ul>
+      <li>Indukčné čiary sú vždy <strong>uzavreté krivky</strong>, nemajú začiatok ani koniec.</li>
+      <li><strong>Mimo magnetu</strong> idú od <span class="n">S</span> k <span class="s">J</span>, <strong>vnútri magnetu</strong> od <span class="s">J</span> k <span class="n">S</span>.</li>
+      <li>Kde sú čiary <strong>hustejšie</strong>, tam je pole <strong>silnejšie</strong> (pri póloch).</li>
+      <li>Indukčné čiary sa <strong>nikdy nepretínajú</strong>.</li>
+      <li>Smer magnetickej indukcie <span class="m"><i>B</i></span> v danom bode = smer <strong>dotyčnice</strong> k indukčnej čiare.</li>
+    </ul>
+  </div>
+
+  <figure>
+    <svg viewBox="0 0 520 270" role="img" aria-label="Indukčné čiary tyčového magnetu: mimo magnetu idú od S k J, vnútri od J k S">
+      <g fill="none" stroke="var(--teal)" stroke-width="1.8">
+        <path d="M350 122 C430 30 90 30 170 122"/>
+        <path d="M350 118 C450 -25 70 -25 170 118"/>
+        <path d="M350 126 C410 80 110 80 170 126"/>
+        <path d="M350 138 C430 230 90 230 170 138"/>
+        <path d="M350 142 C450 285 70 285 170 142"/>
+        <path d="M350 134 C410 180 110 180 170 134"/>
+        <path d="M350 130 L505 130"/>
+        <path d="M15 130 L170 130"/>
+      </g>
+      <g fill="none" stroke="var(--teal)" stroke-width="2">
+        <path d="M267 47 L259 53 L267 59"/>
+        <path d="M267 4 L259 10 L267 16"/>
+        <path d="M267 83 L259 89 L267 95"/>
+        <path d="M267 201 L259 207 L267 213"/>
+        <path d="M267 244 L259 250 L267 256"/>
+        <path d="M267 165 L259 171 L267 177"/>
+        <path d="M455 124 L463 130 L455 136"/>
+        <path d="M85 124 L93 130 L85 136"/>
+      </g>
+      <rect x="170" y="110" width="90" height="40" fill="var(--south-soft)" stroke="var(--south)" stroke-width="2"/>
+      <rect x="260" y="110" width="90" height="40" fill="var(--north-soft)" stroke="var(--north)" stroke-width="2"/>
+      <text x="190" y="137" font-size="20" font-weight="700" fill="var(--south)">J</text>
+      <text x="320" y="137" font-size="20" font-weight="700" fill="var(--north)">S</text>
+      <path d="M215 130 L305 130" stroke="var(--ink)" stroke-width="1.5" stroke-dasharray="5 4" fill="none"/>
+      <path d="M298 125 L306 130 L298 135" stroke="var(--ink)" stroke-width="1.5" fill="none"/>
+    </svg>
+    <figcaption>Tyčový magnet. Mimo magnetu čiary vychádzajú zo severného pólu S a vstupujú do južného J. Vnútri (čiarkovane) pokračujú od J k S, takže čiara je uzavretá.</figcaption>
+  </figure>
+
+  <h3>Indukčné čiary medzi dvoma magnetmi</h3>
+  <p>Keď priložíme dva magnety k sebe, ich polia sa skladajú. Tvar čiar ukáže, či sa magnety priťahujú alebo odpudzujú.</p>
+
+  <h4>Nesúhlasné póly (S a J): priťahujú sa</h4>
+  <figure>
+    <svg viewBox="0 0 520 170" role="img" aria-label="Nesúhlasné póly: indukčné čiary prechádzajú zo severného pólu jedného magnetu do južného pólu druhého">
+      <g fill="none" stroke="var(--teal)" stroke-width="1.8">
+        <path d="M170 85 L350 85"/>
+        <path d="M170 78 C230 60 290 60 350 78"/>
+        <path d="M170 72 C230 35 290 35 350 72"/>
+        <path d="M170 92 C230 110 290 110 350 92"/>
+        <path d="M170 98 C230 135 290 135 350 98"/>
+      </g>
+      <g fill="none" stroke="var(--teal)" stroke-width="2">
+        <path d="M254 79 L262 85 L254 91"/>
+        <path d="M254 58.5 L262 64.5 L254 70.5"/>
+        <path d="M254 38.25 L262 44.25 L254 50.25"/>
+        <path d="M254 99.5 L262 105.5 L254 111.5"/>
+        <path d="M254 119.75 L262 125.75 L254 131.75"/>
+      </g>
+      <rect x="30" y="70" width="70" height="30" fill="var(--south-soft)" stroke="var(--south)" stroke-width="2"/>
+      <rect x="100" y="70" width="70" height="30" fill="var(--north-soft)" stroke="var(--north)" stroke-width="2"/>
+      <text x="65" y="91" text-anchor="middle" font-size="17" font-weight="700" fill="var(--south)">J</text>
+      <text x="135" y="91" text-anchor="middle" font-size="17" font-weight="700" fill="var(--north)">S</text>
+      <rect x="350" y="70" width="70" height="30" fill="var(--south-soft)" stroke="var(--south)" stroke-width="2"/>
+      <rect x="420" y="70" width="70" height="30" fill="var(--north-soft)" stroke="var(--north)" stroke-width="2"/>
+      <text x="385" y="91" text-anchor="middle" font-size="17" font-weight="700" fill="var(--south)">J</text>
+      <text x="455" y="91" text-anchor="middle" font-size="17" font-weight="700" fill="var(--north)">S</text>
+    </svg>
+    <figcaption>Čiary vychádzajú zo S prvého magnetu a vstupujú priamo do J druhého. Medzi pólmi sú husté a takmer rovnobežné, pole je tam silné a skoro rovnomerné.</figcaption>
+  </figure>
+
+  <h4>Súhlasné póly (S a S alebo J a J): odpudzujú sa</h4>
+  <figure>
+    <svg viewBox="0 0 520 170" role="img" aria-label="Súhlasné póly: indukčné čiary sa navzájom odkláňajú do strán, v strede je neutrálny bod">
+      <defs>
+        <marker id="arr0" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="var(--teal)"/></marker>
+      </defs>
+      <g fill="none" stroke="var(--teal)" stroke-width="1.8" marker-end="url(#arr0)">
+        <path d="M170 85 L242 85"/>
+        <path d="M170 78 C220 70 235 40 240 12"/>
+        <path d="M170 72 C200 55 205 30 205 12"/>
+        <path d="M170 92 C220 100 235 130 240 158"/>
+        <path d="M170 98 C200 115 205 140 205 158"/>
+        <path d="M350 85 L278 85"/>
+        <path d="M350 78 C300 70 285 40 280 12"/>
+        <path d="M350 72 C320 55 315 30 315 12"/>
+        <path d="M350 92 C300 100 285 130 280 158"/>
+        <path d="M350 98 C320 115 315 140 315 158"/>
+      </g>
+      <circle cx="260" cy="85" r="4" fill="var(--ink)"/>
+      <text x="260" y="72" text-anchor="middle" font-size="12" fill="var(--ink)">neutrálny bod</text>
+      <rect x="30" y="70" width="70" height="30" fill="var(--south-soft)" stroke="var(--south)" stroke-width="2"/>
+      <rect x="100" y="70" width="70" height="30" fill="var(--north-soft)" stroke="var(--north)" stroke-width="2"/>
+      <text x="65" y="91" text-anchor="middle" font-size="17" font-weight="700" fill="var(--south)">J</text>
+      <text x="135" y="91" text-anchor="middle" font-size="17" font-weight="700" fill="var(--north)">S</text>
+      <rect x="350" y="70" width="70" height="30" fill="var(--north-soft)" stroke="var(--north)" stroke-width="2"/>
+      <rect x="420" y="70" width="70" height="30" fill="var(--south-soft)" stroke="var(--south)" stroke-width="2"/>
+      <text x="385" y="91" text-anchor="middle" font-size="17" font-weight="700" fill="var(--north)">S</text>
+      <text x="455" y="91" text-anchor="middle" font-size="17" font-weight="700" fill="var(--south)">J</text>
+    </svg>
+    <figcaption>Čiary z oboch severných pólov idú proti sebe. Keďže sa nesmú pretnúť, odkláňajú sa do strán. V strede je neutrálny bod, kde sa polia navzájom vyrušia (B ≈ 0). Pri J a J to vyzerá rovnako, len šípky smerujú opačne (do pólov).</figcaption>
+  </figure>
+
+  <h3>Značky ⊙ a ⊗</h3>
+  <p>Keď kreslíme pole, ktoré ide kolmo na papier, používame:</p>
+  <div class="two">
+    <div><h4>⊙ bodka</h4><p style="margin:0">čiary (alebo prúd) <strong>vystupujú z nákresu</strong> k tebe. Ako hrot šípky, ktorá letí na teba.</p></div>
+    <div><h4>⊗ krížik</h4><p style="margin:0">čiary (alebo prúd) <strong>vstupujú do nákresu</strong> od teba. Ako perie šípky, ktorá odlieta.</p></div>
+  </div>
+</section>
+
+<!-- 3 -->
+<section class="ch" id="zem">
+  <span class="eyebrow">Kapitola 3</span>
+  <h2>Magnetické pole Zeme</h2>
+
+  <p>Zem sa správa ako <strong>obrovský magnet</strong>. Jej pole je <mark>veľké (siaha ďaleko do vesmíru), ale slabé</mark>.</p>
+  <p><strong>Dôvod:</strong> pohyblivé, roztavené vonkajšie jadro Zeme. Tečúce roztavené železo vytvára elektrické prúdy a tie vytvárajú magnetické pole. Keby sa jadro nehýbalo, pole by zmizlo.</p>
+
+  <div class="box key">
+    <span class="tag">Pozor na póly</span>
+    <ul>
+      <li>pri <strong>severnom geografickom</strong> póle je <span class="s">južný magnetický pól (J)</span>,</li>
+      <li>pri <strong>južnom geografickom</strong> póle je <span class="n">severný magnetický pól (S)</span>.</li>
+    </ul>
+    <p>Preto severný koniec strelky kompasu ukazuje na sever: nesúhlasné póly sa priťahujú.</p>
+  </div>
+
+  <figure>
+    <svg viewBox="0 0 520 300" role="img" aria-label="Zem ako magnet: pri severnom geografickom póle je južný magnetický pól">
+      <g fill="none" stroke="var(--teal)" stroke-width="1.6">
+        <path d="M260 235 C400 330 400 -30 260 65"/>
+        <path d="M260 235 C120 330 120 -30 260 65"/>
+        <path d="M260 235 C470 360 470 -60 260 65"/>
+        <path d="M260 235 C50 360 50 -60 260 65"/>
+      </g>
+      <g fill="none" stroke="var(--teal)" stroke-width="2">
+        <path d="M359 158 L365 150 L371 158"/>
+        <path d="M149 158 L155 150 L161 158"/>
+        <path d="M410 158 L416 150 L422 158"/>
+        <path d="M98 158 L104 150 L110 158"/>
+      </g>
+      <circle cx="260" cy="150" r="95" fill="#eef6f3" stroke="var(--ink)" stroke-width="2"/>
+      <rect x="245" y="70" width="30" height="80" fill="var(--south-soft)" stroke="var(--south)" stroke-width="2"/>
+      <rect x="245" y="150" width="30" height="80" fill="var(--north-soft)" stroke="var(--north)" stroke-width="2"/>
+      <text x="260" y="97" text-anchor="middle" font-size="18" font-weight="700" fill="var(--south)">J</text>
+      <text x="260" y="218" text-anchor="middle" font-size="18" font-weight="700" fill="var(--north)">S</text>
+      <text x="260" y="22" text-anchor="middle" font-size="13" fill="var(--ink)">severný geografický pól</text>
+      <text x="260" y="38" text-anchor="middle" font-size="13" fill="var(--south)">= južný magnetický pól</text>
+      <text x="260" y="268" text-anchor="middle" font-size="13" fill="var(--ink)">južný geografický pól</text>
+      <text x="260" y="284" text-anchor="middle" font-size="13" fill="var(--north)">= severný magnetický pól</text>
+    </svg>
+    <figcaption>Zem ako „tyčový magnet“. Indukčné čiary vychádzajú pri južnom geografickom póle a vstupujú pri severnom.</figcaption>
+  </figure>
+
+  <h3>Prečo je pole Zeme dôležité</h3>
+  <ul>
+    <li><strong>Ochrana pred slnečným vetrom.</strong> Slnečný vietor je prúd vysokoenergetických nabitých častíc zo Slnka. Indukčné čiary ich zachytia a odvádzajú k pólom. Tam vzniká <a href="#vyuzitie">polárna žiara</a>.</li>
+    <li><strong>Navigácia.</strong> Kompas funguje vďaka poľu Zeme. Silné slnečné búrky narušia pole a sú nebezpečné pre navigáciu (lietadlá, GPS) aj pre satelity.</li>
+    <li><strong>Migrujúce zvieratá</strong> (sťahovavé vtáky, morské korytnačky) majú magnetické receptory a podľa poľa Zeme sa orientujú. Predpokladá sa, že niektoré vtáky pole dokonca „vidia“ ako tieň v zornom poli, ktorý sa mení podľa svetovej strany.</li>
+    <li><strong>Elektromagnetizmus</strong> (elektromagnetická interakcia) je jedna zo <strong>4 základných síl (interakcií) prírody</strong>. Ďalšie sú gravitačná, silná a slabá jadrová.</li>
+  </ul>
+</section>
+
+<!-- 4 -->
+<section class="ch" id="vodic">
+  <span class="eyebrow">Kapitola 4</span>
+  <h2>Vodič s prúdom</h2>
+
+  <p><strong>1820</strong>: <mark>H. C. Oersted</mark> zistil, že <mark>vodič s prúdom má magnetické pole</mark>. Magnetka položená pri drôte sa po zapnutí prúdu vychýlila. Bol to prvý dôkaz, že elektrina a magnetizmus spolu súvisia.</p>
+  <p>Indukčné čiary okolo priameho vodiča sú <strong>sústredné kružnice</strong>, ktorých stred leží vo vodiči.</p>
+
+  <h3>Dohodnutý smer prúdu</h3>
+  <p><mark>Dohodnutý smer prúdu je z + do −</mark>, teda od kladného pólu zdroja k zápornému. (Elektróny sa v kove v skutočnosti pohybujú opačne, od − k +. Pravidlá ale vždy používajú dohodnutý smer.)</p>
+
+  <h3>Ampérovo pravidlo pravej ruky (APPR)</h3>
+  <div class="box key">
+    <span class="tag">Pravidlo</span>
+    <p><strong>Pravú ruku</strong> priložíme k vodiču tak, aby <strong>vztýčený palec</strong> ukazoval <strong>dohodnutý smer prúdu</strong>. <strong>Prsty zahnuté</strong> okolo vodiča potom ukazujú <strong>smer indukčných čiar</strong>.</p>
+  </div>
+
+  <figure>
+    <svg viewBox="0 0 560 230" role="img" aria-label="Indukčné čiary okolo vodiča: prúd z nákresu dáva čiary proti smeru hodinových ručičiek, prúd do nákresu v smere hodinových ručičiek">
+      <g fill="none" stroke="var(--teal)" stroke-width="1.6">
+        <circle cx="140" cy="110" r="30"/><circle cx="140" cy="110" r="58"/><circle cx="140" cy="110" r="86"/>
+        <circle cx="420" cy="110" r="30"/><circle cx="420" cy="110" r="58"/><circle cx="420" cy="110" r="86"/>
+      </g>
+      <g fill="none" stroke="var(--teal)" stroke-width="2">
+        <path d="M146 74 L138 80 L146 86"/><path d="M146 46 L138 52 L146 58"/><path d="M146 18 L138 24 L146 30"/>
+        <path d="M134 134 L142 140 L134 146"/><path d="M134 162 L142 168 L134 174"/><path d="M134 190 L142 196 L134 202"/>
+        <path d="M414 74 L422 80 L414 86"/><path d="M414 46 L422 52 L414 58"/><path d="M414 18 L422 24 L414 30"/>
+        <path d="M426 134 L418 140 L426 146"/><path d="M426 162 L418 168 L426 174"/><path d="M426 190 L418 196 L426 202"/>
+      </g>
+      <circle cx="140" cy="110" r="11" fill="var(--surface)" stroke="var(--ink)" stroke-width="2"/>
+      <circle cx="140" cy="110" r="3.5" fill="var(--ink)"/>
+      <circle cx="420" cy="110" r="11" fill="var(--surface)" stroke="var(--ink)" stroke-width="2"/>
+      <path d="M413 103 L427 117 M427 103 L413 117" stroke="var(--ink)" stroke-width="2"/>
+      <text x="140" y="224" text-anchor="middle" font-size="13" fill="var(--ink)">prúd ⊙ z nákresu: čiary proti smeru hodín</text>
+      <text x="420" y="224" text-anchor="middle" font-size="13" fill="var(--ink)">prúd ⊗ do nákresu: čiary v smere hodín</text>
+    </svg>
+    <figcaption>Pohľad zhora na vodič. Skús si to pravou rukou: palec namier na seba (⊙), prsty sa stáčajú proti smeru hodinových ručičiek.</figcaption>
+  </figure>
+
+  <h3>Cievka</h3>
+  <p><mark>Ak vodič zvinieme do cievky, získame silnejšie magnetické pole.</mark> Polia jednotlivých závitov sa sčítajú. Vnútri cievky sú indukčné čiary takmer rovnobežné a pole je tam rovnomerné. Cievka s prúdom sa správa ako tyčový magnet, má pól S a pól J.</p>
+
+  <div class="box add">
+    <span class="tag">Doplnené (v zošite: „je v papieri“)</span>
+    <p><strong>Ampérovo pravidlo pravej ruky pre cievku:</strong> pravú ruku priložíme na cievku tak, aby <strong>zahnuté prsty</strong> ukazovali <strong>smer prúdu v závitoch</strong>. <strong>Odtiahnutý palec</strong> potom ukazuje k <span class="n">severnému pólu (S)</span> cievky, teda smer indukčných čiar vnútri cievky.</p>
+    <p>Pozor na rozdiel: pri priamom vodiči palec = prúd, prsty = čiary. Pri cievke je to naopak: prsty = prúd, palec = čiary (pól S).</p>
+  </div>
+
+</section>
+
+<!-- 5 -->
+<section class="ch" id="sila">
+  <span class="eyebrow">Kapitola 5</span>
+  <h2>Vodič s prúdom v magnetickom poli</h2>
+
+  <p>Ak sa vodič s prúdom nachádza v magnetickom poli <strong>iného</strong> magnetu, bude naň pôsobiť <mark>magnetická sila <span class="m"><i>F</i><sub>m</sub></span></mark>, ktorá spôsobí jeho vychýlenie.</p>
+
+  <div class="box q">
+    <span class="tag">Otázka zo zošita: „Spôsobuje tú F<sub>m</sub> ten druhý magnet?“</span>
+    <p>Áno. Silu spôsobuje <strong>pole toho druhého (vonkajšieho) magnetu</strong>, v ktorom vodič leží. Vlastné pole vodiča na vodič samotný nepôsobí. A podľa 3. Newtonovho zákona pôsobí aj vodič rovnako veľkou opačnou silou na magnet.</p>
+  </div>
+
+  <p>Veľkosť magnetickej sily závisí od sily magnetu (<span class="m"><i>B</i></span>), od veľkosti prúdu (<span class="m"><i>I</i></span>) a od dĺžky vodiča v poli (<span class="m"><i>l</i></span>). Ak je vodič <strong>kolmo</strong> na indukčné čiary:</p>
+  <div class="f"><i>F</i><sub>m</sub> = <i>B</i> · <i>I</i> · <i>l</i></div>
+  <dl class="vars">
+    <dt>F<sub>m</sub></dt><dd>magnetická sila [N]</dd>
+    <dt>B</dt><dd>magnetická indukcia [T, tesla]</dd>
+    <dt>I</dt><dd>elektrický prúd [A]</dd>
+    <dt>l</dt><dd>aktívna dĺžka vodiča, teda časť vodiča, ktorá je v poli [m]</dd>
+  </dl>
+
+  <h3>Magnetická indukcia B</h3>
+  <p>Z rovnice si vyjadríme <span class="m"><i>B</i></span>:</p>
+  <div class="f"><i>B</i> = <span class="frac"><span><i>F</i><sub>m</sub></span><span><i>I</i> · <i>l</i></span></span> &nbsp;&nbsp; [<i>B</i>] = T (tesla) = <span class="frac"><span>N</span><span>A · m</span></span></div>
+  <ul>
+    <li><span class="m"><i>B</i></span> je <mark>vektorová</mark> veličina, hovorí o <strong>smere</strong> magnetického poľa aj o jeho <strong>veľkosti</strong> (sile). Je veľmi dôležitá, je to hlavná veličina, ktorá popisuje magnetické pole.</li>
+    <li><strong>Čo znamená 1 T:</strong> ak má magnetická indukcia veľkosť <span class="m"><i>B</i> = 1 T</span>, potom na vodič s prúdom 1 A dĺžky 1 m, umiestnený kolmo na indukčné čiary, pôsobí magnetická sila 1 N.</li>
+    <li>Smer vektora <span class="m"><i>B</i></span> = smer dotyčnice k indukčnej čiare.</li>
+  </ul>
+
+  <h3>Keď vodič nie je kolmo na pole</h3>
+  <ul>
+    <li>Ak je vodič <mark>rovnobežný s indukčnými čiarami</mark>, potom <span class="m"><i>F</i><sub>m</sub> = 0 N</span>. Vodič sa nepohne (nekmitá).</li>
+    <li>Ak zviera s čiarami uhol <span class="m"><i>α</i></span>:</li>
+  </ul>
+  <div class="f"><i>F</i><sub>m</sub> = <i>B</i> · <i>I</i> · <i>l</i> · sin <i>α</i><span class="cap">α = uhol medzi smerom B a vodičom (smerom prúdu)</span></div>
+  <p>Sila je najväčšia pri <span class="m"><i>α</i> = 90°</span> (sin 90° = 1), vtedy dostaneš pôvodný vzorec <span class="m"><i>F</i><sub>m</sub> = <i>BIl</i></span>.</p>
+
+  <div class="box q">
+    <span class="tag">Otázka zo zošita: „Čo je to za interval a ak by uhol α bol π, je F<sub>m</sub> = 0?“</span>
+    <p><span class="m"><i>α</i> ∈ ⟨0; π⟩</span> znamená, že uhol medzi vodičom a čiarami môže byť od 0 do π radiánov, teda <strong>od 0° do 180°</strong>. Väčší uhol medzi dvoma priamkami nemá zmysel.</p>
+    <p>Áno, pri <span class="m"><i>α</i> = π</span> (180°) je <span class="m">sin π = 0</span>, takže <span class="m"><i>F</i><sub>m</sub> = 0 N</span>. Vodič je vtedy tiež rovnobežný s čiarami, len prúd tečie opačným smerom. Takže sila je nulová na <strong>okrajoch</strong> intervalu (0° a 180°) a najväčšia v strede (90°).</p>
+  </div>
+
+  <h3>Smer sily: Flemingovo pravidlo ľavej ruky (FPĽR)</h3>
+  <div class="box key">
+    <span class="tag">Pravidlo</span>
+    <p>Položíme <strong>otvorenú ľavú ruku</strong> na priamy vodič tak, aby <strong>prsty</strong> ukazovali <strong>dohodnutý smer prúdu</strong> a <strong>indukčné čiary vstupovali do dlane</strong>. <strong>Vztýčený palec</strong> ukáže <strong>smer magnetickej sily <span class="m"><i>F</i><sub>m</sub></span></strong>.</p>
+  </div>
+
+  <figure>
+    <svg viewBox="0 0 460 250" role="img" aria-label="Vodič s prúdom smerom hore v poli smerujúcom do nákresu, sila pôsobí doľava">
+      <defs>
+        <g id="xs"><circle r="10" fill="var(--surface)" stroke="var(--south)" stroke-width="1.6"/><path d="M-6 -6 L6 6 M6 -6 L-6 6" stroke="var(--south)" stroke-width="1.6"/></g>
+        <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="context-stroke"/></marker>
+      </defs>
+      <g>
+        <use href="#xs" x="70" y="45"/><use href="#xs" x="150" y="45"/><use href="#xs" x="310" y="45"/><use href="#xs" x="390" y="45"/>
+        <use href="#xs" x="70" y="125"/><use href="#xs" x="150" y="125"/><use href="#xs" x="310" y="125"/><use href="#xs" x="390" y="125"/>
+        <use href="#xs" x="70" y="205"/><use href="#xs" x="150" y="205"/><use href="#xs" x="310" y="205"/><use href="#xs" x="390" y="205"/>
+      </g>
+      <line x1="230" y1="235" x2="230" y2="15" stroke="var(--ink)" stroke-width="4" marker-end="url(#arr)"/>
+      <text x="242" y="30" font-size="16" font-style="italic" fill="var(--ink)">I</text>
+      <line x1="226" y1="125" x2="120" y2="125" stroke="var(--north)" stroke-width="3" marker-end="url(#arr)"/>
+      <text x="168" y="113" font-size="16" font-weight="700" fill="var(--north)">F<tspan font-size="11" dy="4">m</tspan></text>
+      <text x="350" y="242" font-size="13" fill="var(--south)">B ⊗ do nákresu</text>
+    </svg>
+    <figcaption>Ľavá ruka dlaňou k tebe (čiary ⊗ idú „od teba“, teda vstupujú do dlane), prsty hore v smere prúdu. Palec ukazuje doľava, tam pôsobí sila.</figcaption>
+  </figure>
+
+  <ul>
+    <li>Pri každom pravidle si treba zistiť, kam čo smeruje. <strong>⊙</strong> = indukčné čiary vystupujú z nákresu, <strong>⊗</strong> = vstupujú do nákresu.</li>
+    <li>Keď vymeníme póly zdroja (+ a −), prúd potečie opačne a sila sa otočí. Ak púšťame <strong>striedavý prúd</strong>, smer sily sa stále mení a vodič <strong>kmitá</strong>.</li>
+  </ul>
+
+  <h3>Využitie</h3>
+  <ul>
+    <li><strong>reproduktory</strong>: púšťa sa striedavý prúd, cievka s membránou kmitá sem a tam a vytvára zvuk,</li>
+    <li><strong>elektromotory</strong>: pohyb otáčavých častí (rotora),</li>
+    <li><strong>analógové hodinky</strong>: pohyb ručičiek (malý krokový motorček),</li>
+    <li>ručičkové meracie prístroje (ampérmeter, voltmeter).</li>
+  </ul>
+</section>
+
+<!-- 6 -->
+<section class="ch" id="rovnobezne">
+  <span class="eyebrow">Kapitola 6</span>
+  <h2>Magnetické pole rovnobežných vodičov s prúdom</h2>
+
+  <p>Každý vodič s prúdom má okolo seba magnetické pole, takže sa správa ako magnet. Druhý vodič leží v jeho poli, preto naň pôsobí magnetická sila.</p>
+
+  <div class="two">
+    <div><h4>Rovnaký smer prúdov</h4><p style="margin:0"><mark>sa priťahujú</mark></p></div>
+    <div><h4>Opačný smer prúdov</h4><p style="margin:0"><mark>sa odpudzujú</mark></p></div>
+  </div>
+  <p>Pozor, je to opačne ako pri magnetoch (tam sa súhlasné póly odpudzujú).</p>
+
+  <h3>Ako to odvodiť (postup zo zošita)</h3>
+  <ol class="steps">
+    <li>Indukčné čiary prvého vodiča určím <strong>APPR</strong> (pravá ruka, palec = prúd <span class="m"><i>I</i><sub>1</sub></span>).</li>
+    <li>V mieste druhého vodiča nakreslím vektor <span class="m"><i>B</i><sub>1</sub></span>: je to <strong>dotyčnica</strong> k indukčnej čiare prvého vodiča.</li>
+    <li>Druhý vodič je v magnetickom poli toho prvého. Smer sily naň určím <strong>FPĽR</strong> (ľavá ruka, prsty = <span class="m"><i>I</i><sub>2</sub></span>, <span class="m"><i>B</i><sub>1</sub></span> do dlane).</li>
+    <li>Všetko je navzájom kolmé: vodič, <span class="m"><i>B</i><sub>1</sub></span> aj sila.</li>
+  </ol>
+
+  <div class="box q">
+    <span class="tag">Otázka zo zošita: „On pôsobí ako magnet?“</span>
+    <p>Áno. Vodič s prúdom má vlastné magnetické pole (Oersted), takže pre druhý vodič je „magnetom“. Pôsobí to aj opačne: druhý vodič pôsobí na prvý rovnako veľkou silou opačného smeru.</p>
+  </div>
+
+  <figure>
+    <svg viewBox="0 0 560 210" role="img" aria-label="Dva vodiče s prúdom z nákresu sa priťahujú, vodiče s opačnými prúdmi sa odpudzujú">
+      <defs>
+        <marker id="arr2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="context-stroke"/></marker>
+      </defs>
+      <g fill="none" stroke="var(--teal)" stroke-width="1.3" opacity="0.7">
+        <circle cx="70" cy="95" r="40"/><circle cx="70" cy="95" r="70"/>
+        <circle cx="340" cy="95" r="40"/><circle cx="340" cy="95" r="70"/>
+      </g>
+      <circle cx="70" cy="95" r="11" fill="var(--surface)" stroke="var(--ink)" stroke-width="2"/><circle cx="70" cy="95" r="3.5" fill="var(--ink)"/>
+      <circle cx="210" cy="95" r="11" fill="var(--surface)" stroke="var(--ink)" stroke-width="2"/><circle cx="210" cy="95" r="3.5" fill="var(--ink)"/>
+      <line x1="210" y1="80" x2="210" y2="40" stroke="var(--teal)" stroke-width="2.5" marker-end="url(#arr2)"/>
+      <text x="218" y="48" font-size="14" font-weight="700" fill="var(--teal)">B<tspan font-size="10" dy="4">1</tspan></text>
+      <line x1="196" y1="95" x2="150" y2="95" stroke="var(--north)" stroke-width="3" marker-end="url(#arr2)"/>
+      <line x1="84" y1="95" x2="130" y2="95" stroke="var(--north)" stroke-width="3" marker-end="url(#arr2)"/>
+      <text x="70" y="128" text-anchor="middle" font-size="13" fill="var(--ink)">I₁ ⊙</text>
+      <text x="210" y="128" text-anchor="middle" font-size="13" fill="var(--ink)">I₂ ⊙</text>
+      <text x="140" y="196" text-anchor="middle" font-size="13" font-weight="600" fill="var(--ink)">rovnaký smer: priťahujú sa</text>
+
+      <circle cx="340" cy="95" r="11" fill="var(--surface)" stroke="var(--ink)" stroke-width="2"/><circle cx="340" cy="95" r="3.5" fill="var(--ink)"/>
+      <circle cx="480" cy="95" r="11" fill="var(--surface)" stroke="var(--ink)" stroke-width="2"/><path d="M473 88 L487 102 M487 88 L473 102" stroke="var(--ink)" stroke-width="2"/>
+      <line x1="480" y1="80" x2="480" y2="40" stroke="var(--teal)" stroke-width="2.5" marker-end="url(#arr2)"/>
+      <text x="488" y="48" font-size="14" font-weight="700" fill="var(--teal)">B<tspan font-size="10" dy="4">1</tspan></text>
+      <line x1="494" y1="95" x2="540" y2="95" stroke="var(--north)" stroke-width="3" marker-end="url(#arr2)"/>
+      <line x1="326" y1="95" x2="282" y2="95" stroke="var(--north)" stroke-width="3" marker-end="url(#arr2)"/>
+      <text x="340" y="128" text-anchor="middle" font-size="13" fill="var(--ink)">I₁ ⊙</text>
+      <text x="480" y="128" text-anchor="middle" font-size="13" fill="var(--ink)">I₂ ⊗</text>
+      <text x="410" y="196" text-anchor="middle" font-size="13" font-weight="600" fill="var(--ink)">opačný smer: odpudzujú sa</text>
+    </svg>
+    <figcaption>Pohľad zhora na dva vodiče. Pole prvého vodiča (kružnice) má v mieste druhého vodiča smer B₁ nahor. FPĽR potom dá silu na druhý vodič (červená šípka).</figcaption>
+  </figure>
+</section>
+
+<!-- 7 -->
+<section class="ch" id="ampere">
+  <span class="eyebrow">Kapitola 7</span>
+  <h2>Ampérov zákon</h2>
+
+  <p>Udáva, akou silou na seba pôsobia dva rovnobežné priame vodiče s prúdom:</p>
+  <div class="f"><i>F</i><sub>m</sub> = <i>k</i> · <span class="frac"><span><i>I</i><sub>1</sub> · <i>I</i><sub>2</sub> · <i>l</i></span><span><i>d</i></span></span> &nbsp;&nbsp;&nbsp; <i>k</i> = <span class="frac"><span><i>μ</i><sub>0</sub> · <i>μ</i><sub>r</sub></span><span>2π</span></span></div>
+  <dl class="vars">
+    <dt>I<sub>1</sub>, I<sub>2</sub></dt><dd>prúdy vo vodičoch [A]</dd>
+    <dt>l</dt><dd>dĺžka vodičov (ich spoločná časť) [m]</dd>
+    <dt>d</dt><dd><strong>vzdialenosť vodičov</strong> [m]</dd>
+    <dt>μ<sub>0</sub></dt><dd>„mí nula“, permeabilita vákua, <span class="m"><i>μ</i><sub>0</sub> = 4π · 10<sup>−7</sup> N·A<sup>−2</sup></span></dd>
+    <dt>μ<sub>r</sub></dt><dd>relatívna permeabilita prostredia (bez jednotky)</dd>
+  </dl>
+  <p>Vo vákuu (a približne aj vo vzduchu) je <span class="m"><i>μ</i><sub>r</sub> = 1</span>, takže <span class="m"><i>k</i> = 4π · 10<sup>−7</sup> / 2π = <strong>2 · 10<sup>−7</sup> N·A<sup>−2</sup></strong></span>. Toto číslo si oplatí pamätať.</p>
+
+  <div class="box fix">
+    <span class="tag">Oprava zošita</span>
+    <p>V zošite je pri <span class="m"><i>d</i></span> napísané „priemer vodiča“. Správne je <strong><span class="m"><i>d</i></span> = vzdialenosť medzi vodičmi</strong>. Čím sú vodiče ďalej od seba, tým je sila menšia (d je v menovateli).</p>
+  </div>
+
+  <h3>Relatívna permeabilita μ<sub>r</sub></h3>
+  <p>Hovorí, koľkokrát látka zosilní magnetické pole v porovnaní s vákuom.</p>
+  <ul>
+    <li>väčšinou je <span class="m"><i>μ</i><sub>r</sub> ≈ 1</span> (vzduch, voda, väčšina látok),</li>
+    <li><strong>veľmi silné magnety</strong> majú <span class="m"><i>μ</i><sub>r</sub></span> rádovo <strong>100 až 100 000</strong>: železo (Fe), kobalt (Co), nikel (Ni) a ich zliatiny.</li>
+  </ul>
+  <h3>Definícia ampéra</h3>
+  <p><mark>1 ampér</mark> je stály prúd, ktorý pri prechode dvoma priamymi rovnobežnými, nekonečne dlhými vodičmi zanedbateľného prierezu, umiestnenými vo vákuu vo vzájomnej vzdialenosti 1 m, vyvolá medzi týmito vodičmi silu <strong>2 · 10<sup>−7</sup> N na každý meter ich dĺžky</strong>.</p>
+  <p>Ampér je <strong>základná jednotka sústavy SI</strong>.</p>
+
+  <div class="box q">
+    <span class="tag">Otázka zo zošita: „Ešte raz vysvetliť vzorec a to, čo je napísané pri ampéri“</span>
+    <p>Definícia ampéra je len Ampérov zákon s dosadenými číslami. Dosaď <span class="m"><i>I</i><sub>1</sub> = <i>I</i><sub>2</sub> = 1 A</span>, <span class="m"><i>l</i> = 1 m</span>, <span class="m"><i>d</i> = 1 m</span>, vákuum (<span class="m"><i>μ</i><sub>r</sub> = 1</span>):</p>
+    <div class="f"><i>F</i><sub>m</sub> = <span class="frac"><span>4π · 10<sup>−7</sup> · 1</span><span>2π</span></span> · <span class="frac"><span>1 · 1 · 1</span><span>1</span></span> = 2 · 10<sup>−7</sup> N</div>
+    <p>Takže: ak týmto dvom vodičom 1 m od seba namerajú silu presne 2 · 10<sup>−7</sup> N na meter, tak nimi tečie presne 1 A. Tak bol ampér stanovený: cez silu medzi vodičmi. Slová „nekonečne dlhé“ a „zanedbateľný prierez“ sú tam preto, aby platil jednoduchý vzorec bez okrajových efektov.</p>
+  </div>
+
+</section>
+
+<!-- 8 -->
+<section class="ch" id="castica">
+  <span class="eyebrow">Kapitola 8</span>
+  <h2>Častica s nábojom v magnetickom poli</h2>
+
+  <p>Elektrický prúd je vlastne <strong>pohyb nabitých častíc</strong>. Ak magnetické pole pôsobí na vodič s prúdom, musí pôsobiť aj na každú jednu nabitú časticu, ktorá sa v poli pohybuje.</p>
+
+  <h3>Odvodenie (zo zošita)</h3>
+  <p>Prúd je náboj, ktorý prejde za čas:</p>
+  <div class="f"><i>I</i> = <span class="frac"><span><i>Q</i></span><span><i>t</i></span></span> = <span class="frac"><span><i>N</i> · <i>e</i></span><span><i>l</i> / <i>v</i></span></span> = <span class="frac"><span><i>N</i> · <i>e</i> · <i>v</i></span><span><i>l</i></span></span></div>
+  <dl class="vars">
+    <dt>Q</dt><dd>elektrický náboj [C, coulomb]</dd>
+    <dt>t</dt><dd>čas; častica prejde dráhu <span class="m"><i>l</i></span> rýchlosťou <span class="m"><i>v</i></span>, takže <span class="m"><i>t</i> = <i>l</i>/<i>v</i></span></dd>
+    <dt>N</dt><dd>počet častíc</dd>
+    <dt>e</dt><dd><mark>elementárny náboj</mark> (náboj protónu), <span class="m"><i>e</i> = 1,602 · 10<sup>−19</sup> C</span>. Elektrón má náboj −<i>e</i>.</dd>
+  </dl>
+  <p>Dosadíme do vzorca pre silu na vodič:</p>
+  <div class="f"><i>F</i><sub>m</sub> = <i>B</i> · <i>I</i> · <i>l</i> = <i>B</i> · <span class="frac"><span><i>e</i> · <i>v</i> · <i>N</i></span><span><i>l</i></span></span> · <i>l</i> = <i>N</i> · <i>e</i> · <i>v</i> · <i>B</i></div>
+  <p>Na <strong>jednu</strong> časticu (<span class="m"><i>N</i> = 1</span>) s nábojom <span class="m"><i>e</i></span>, ktorá letí kolmo na indukčné čiary, teda pôsobí sila:</p>
+  <div class="f"><i>F</i><sub>m</sub> = <i>e</i> · <i>v</i> · <i>B</i><span class="cap">magnetická sila, ktorá pôsobí na časticu s elementárnym nábojom</span></div>
+
+  <div class="box add">
+    <span class="tag">Doplnené: všeobecný tvar</span>
+    <p>Pre časticu s ľubovoľným nábojom <span class="m"><i>Q</i></span>, ktorá letí pod uhlom <span class="m"><i>α</i></span> k indukčným čiaram:</p>
+    <div class="f"><i>F</i><sub>m</sub> = <i>Q</i> · <i>v</i> · <i>B</i> · sin <i>α</i></div>
+    <ul>
+      <li>Táto sila sa volá aj <strong>Lorentzova sila</strong> (magnetická časť).</li>
+      <li>Ak častica letí <strong>rovnobežne</strong> s čiarami (<span class="m"><i>α</i> = 0°</span>), sila je nulová a častica letí priamo ďalej.</li>
+      <li>Na <strong>nepohybujúcu sa</strong> časticu (<span class="m"><i>v</i> = 0</span>) magnetické pole nepôsobí vôbec.</li>
+      <li>Do výpočtu veľkosti sily dosadzuj <strong>absolútnu hodnotu</strong> náboja. Znamienko rozhoduje len o smere.</li>
+    </ul>
+  </div>
+
+  <h3>Smer sily na časticu</h3>
+  <p>Použijeme <strong>FPĽR</strong>, len <mark>namiesto prúdu <span class="m"><i>I</i></span> dáme smer rýchlosti <span class="m"><i>v</i></span> kladnej častice</mark>:</p>
+  <div class="two">
+    <div>
+      <h4>Kladná častica ⊕</h4>
+      <p style="margin:0">ľavá ruka: prsty ukazujú smer <span class="m"><i>v</i></span>, indukčné čiary vstupujú do dlane, palec ukazuje smer <span class="m"><i>F</i><sub>m</sub></span>.</p>
+    </div>
+    <div>
+      <h4>Záporná častica ⊖ (elektrón)</h4>
+      <p style="margin:0">prsty ľavej ruky ukazujú <strong>opačný smer</strong>, ako je <span class="m"><i>v</i></span>. Čiary vstupujú do dlane, palec ukazuje smer <span class="m"><i>F</i><sub>m</sub></span>. Jednoducho: sila je opačná ako pri kladnej častici.</p>
+    </div>
+  </div>
+
+  <h3>Pohyb po kružnici</h3>
+  <p>Magnetická sila je vždy <strong>kolmá na rýchlosť</strong>. Preto časticu nezrýchľuje ani nespomaľuje, iba jej <strong>zakrivuje dráhu</strong>. Ak <span class="m"><i>v</i></span> ide kolmo na čiary, častica sa nebude pohybovať rovno, ale pôjde <mark>po kružnici</mark>.</p>
+  <p>Magnetická sila tu robí prácu <strong>dostredivej sily</strong>:</p>
+  <div class="f"><i>F</i><sub>m</sub> = <i>F</i><sub>d</sub> &nbsp;&nbsp;⇒&nbsp;&nbsp; <i>B</i> · <i>e</i> · <i>v</i> = <i>m</i> · <i>a</i><sub>d</sub> = <span class="frac"><span><i>m</i> · <i>v</i><sup>2</sup></span><span><i>r</i></span></span></div>
+  <p>kde <span class="m"><i>a</i><sub>d</sub> = <i>v</i><sup>2</sup>/<i>r</i> = <i>ω</i><sup>2</sup> · <i>r</i></span> je dostredivé zrýchlenie a <span class="m"><i>m</i></span> je hmotnosť častice. Vyjadríme polomer:</p>
+  <div class="f"><i>r</i> = <span class="frac"><span><i>m</i> · <i>v</i></span><span><i>B</i> · <i>e</i></span></span><span class="cap">polomer kruhovej trajektórie (všeobecne s nábojom Q: r = m·v / (B·Q))</span></div>
+  <p>Zo zošita: <strong><span class="m"><i>r</i></span> je hlavná charakteristika</strong> pohybu. Ťažšia alebo rýchlejšia častica má väčší polomer, silnejšie pole alebo väčší náboj polomer zmenšia.</p>
+
+  <figure>
+    <svg viewBox="0 0 460 300" role="img" aria-label="Elektrón v poli smerujúcom do nákresu: letí doprava, sila ho ťahá dole, obieha v smere hodinových ručičiek">
+      <defs>
+        <g id="xs2"><circle r="9" fill="var(--surface)" stroke="var(--south)" stroke-width="1.4" opacity="0.8"/><path d="M-5 -5 L5 5 M5 -5 L-5 5" stroke="var(--south)" stroke-width="1.4" opacity="0.8"/></g>
+        <marker id="arr3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="context-stroke"/></marker>
+      </defs>
+      <g>
+        <use href="#xs2" x="40" y="40"/><use href="#xs2" x="420" y="40"/><use href="#xs2" x="40" y="260"/><use href="#xs2" x="420" y="260"/>
+        <use href="#xs2" x="40" y="150"/><use href="#xs2" x="420" y="150"/><use href="#xs2" x="230" y="160"/>
+        <use href="#xs2" x="120" y="270"/><use href="#xs2" x="340" y="270"/>
+      </g>
+      <circle cx="230" cy="160" r="100" fill="none" stroke="var(--teal)" stroke-width="2" stroke-dasharray="6 5"/>
+      <path d="M322 196 L327 205 L335 197" fill="none" stroke="var(--teal)" stroke-width="2"/>
+      <path d="M138 124 L133 115 L125 123" fill="none" stroke="var(--teal)" stroke-width="2"/>
+      <line x1="244" y1="60" x2="310" y2="60" stroke="var(--ink)" stroke-width="3" marker-end="url(#arr3)"/>
+      <text x="300" y="50" font-size="16" font-style="italic" font-weight="700" fill="var(--ink)">v</text>
+      <line x1="230" y1="74" x2="230" y2="130" stroke="var(--north)" stroke-width="3" marker-end="url(#arr3)"/>
+      <text x="238" y="112" font-size="15" font-weight="700" fill="var(--north)">F<tspan font-size="10" dy="4">m</tspan></text>
+      <circle cx="230" cy="60" r="12" fill="var(--south-soft)" stroke="var(--south)" stroke-width="2"/>
+      <text x="230" y="65" text-anchor="middle" font-size="16" font-weight="700" fill="var(--south)">−</text>
+      <line x1="230" y1="160" x2="329" y2="160" stroke="var(--muted)" stroke-width="1.2"/>
+      <text x="282" y="154" font-size="14" font-style="italic" fill="var(--muted)">r</text>
+    </svg>
+    <figcaption>Príklad zo zošita: elektrón letí doprava, pole ⊗ ide do tabule. Sila smeruje k stredu kružnice (nadol), elektrón obieha v smere hodinových ručičiek. Protón by sa stáčal opačne.</figcaption>
+  </figure>
+
+</section>
+
+<!-- 9 -->
+<section class="ch" id="vyuzitie">
+  <span class="eyebrow">Kapitola 9</span>
+  <h2>Využitie pohybu častíc v magnetickom poli</h2>
+
+  <h3>Tokamak</h3>
+  <p>Silné magnetické pole drží extrémne horúcu <strong>plazmu</strong> (ióny a elektróny) v ohraničenom priestore tak, aby sa nedotýkala stien zariadenia. Žiadny materiál by takú teplotu (stovky miliónov °C) nevydržal. Tokamak má prstencový tvar a slúži na výskum <strong>jadrovej fúzie</strong>.</p>
+
+  <h3>Hmotnostný spektrometer</h3>
+  <p>Dáš doň nejaké vzorky a podľa hmotnosti a náboja zistíš, čo je to za látku. Používa sa, keď chceš chemicky zistiť, čo máme za látku.</p>
+  <p>Ióny letia do magnetického poľa a zakrivia sa po kružnici. Z polomeru vieme určiť hmotnosť:</p>
+  <div class="f"><i>r</i> = <span class="frac"><span><i>m</i> · <i>v</i></span><span><i>B</i> · <i>Q</i></span></span></div>
+  <p>Jedno z nich potrebuješ vedieť a ostatné dodáš. Pri rovnakom <span class="m"><i>v</i></span>, <span class="m"><i>B</i></span> a <span class="m"><i>Q</i></span> platí: <strong>ťažší ión = väčší polomer</strong>. Pole v spektrometri je aj elektrické aj magnetické: elektrické pole ióny urýchli a vyberie tie s rovnakou rýchlosťou, magnetické ich potom rozdelí podľa hmotnosti.</p>
+  <figure>
+    <svg viewBox="0 0 460 200" role="img" aria-label="Hmotnostný spektrometer: ióny rôznej hmotnosti opíšu polkružnice rôznych polomerov">
+      <rect x="20" y="40" width="420" height="150" fill="var(--south-soft)" opacity="0.5"/>
+      <text x="430" y="182" text-anchor="end" font-size="12" fill="var(--south)">pole B ⊗</text>
+      <line x1="20" y1="40" x2="440" y2="40" stroke="var(--ink)" stroke-width="2"/>
+      <line x1="60" y1="5" x2="60" y2="40" stroke="var(--ink)" stroke-width="2.5"/>
+      <text x="70" y="22" font-size="12" fill="var(--ink)">zväzok iónov</text>
+      <g fill="none" stroke-width="2.2">
+        <path d="M60 40 A60 60 0 0 0 180 40" stroke="var(--teal)"/>
+        <path d="M60 40 A90 90 0 0 0 240 40" stroke="var(--north)"/>
+        <path d="M60 40 A120 120 0 0 0 300 40" stroke="var(--south)"/>
+      </g>
+      <rect x="170" y="34" width="20" height="8" fill="var(--teal)"/>
+      <rect x="230" y="34" width="20" height="8" fill="var(--north)"/>
+      <rect x="290" y="34" width="20" height="8" fill="var(--south)"/>
+      <text x="180" y="28" text-anchor="middle" font-size="11" fill="var(--teal)">ľahký</text>
+      <text x="240" y="28" text-anchor="middle" font-size="11" fill="var(--north)">stredný</text>
+      <text x="300" y="28" text-anchor="middle" font-size="11" fill="var(--south)">ťažký</text>
+    </svg>
+    <figcaption>Ióny s rovnakým nábojom a rýchlosťou dopadnú na detektor na rôznych miestach podľa hmotnosti.</figcaption>
+  </figure>
+
+  <h3>Detekcia častíc v jadrovej fyzike (hmlová komora)</h3>
+  <p>Elektricky nabitá častica prechádza cez hmlu (presýtenú paru). Popri jej dráhe sa para kondenzuje na kvapôčky a zostane viditeľná stopa. Vďaka tomu vieme určiť jej trajektóriu. Ak je komora v magnetickom poli, kladné (Q+) a záporné (Q−) častice sa zakrivujú <strong>na opačné strany</strong>. Z polomeru vieme zistiť hmotnosť a rýchlosť, z ohnutia znamienko náboja. Tieto častice idú často takmer rýchlosťou svetla.</p>
+
+  <h3>Polárna žiara</h3>
+  <p>Prúd elektricky nabitých častíc letiacich zo Slnka sa volá <strong>slnečný vietor</strong>. Magnetické indukčné čiary Zeme ho zachytia a odvedú do oblasti pólov. Tam slnečný vietor narazí do ovzdušia a <strong>excituje</strong> (vybudí) atómy vzduchu. Keď sa atómy vracajú do pôvodného stavu, vyžiaria svetlo. Farba závisí od toho, do čoho častice narazia.</p>
+  <h3>Urýchľovače častíc</h3>
+  <p>Častice s nábojom sa v nich urýchľujú (elektrickým poľom) a magnetické pole sa používa na <strong>zakrivenie ich dráhy</strong>, aby mohli obiehať dookola. Fyzici takto chcú napodobniť podmienky tesne po Veľkom tresku. Pošlú proti sebe kladne a záporne nabité (alebo rovnaké) častice, aby sa zrazili a vznikli nové častice. Vznikajú tak extrémne podmienky a nové veci. Najväčší je LHC v CERN-e pri Ženeve (obvod 27 km).</p>
+</section>
+
+<!-- 10 -->
+<section class="ch" id="tahak">
+  <span class="eyebrow">Kapitola 10</span>
+  <h2>Ťahák vzorcov a pravidiel</h2>
+
+  <div class="tbl">
+    <table>
+      <thead><tr><th>Čo</th><th>Vzorec</th><th>Poznámka</th></tr></thead>
+      <tbody>
+        <tr><td>Sila na vodič</td><td class="fm"><i>F</i><sub>m</sub> = <i>B I l</i> sin <i>α</i></td><td>kolmo: sin 90° = 1; rovnobežne: F = 0</td></tr>
+        <tr><td>Magnetická indukcia</td><td class="fm"><i>B</i> = <i>F</i><sub>m</sub> / (<i>I l</i>)</td><td>jednotka T = N/(A·m)</td></tr>
+        <tr><td>Ampérov zákon</td><td class="fm"><i>F</i><sub>m</sub> = <i>k</i> · <i>I</i><sub>1</sub><i>I</i><sub>2</sub><i>l</i> / <i>d</i></td><td>d = vzdialenosť vodičov</td></tr>
+        <tr><td>Konštanta k</td><td class="fm"><i>k</i> = <i>μ</i><sub>0</sub><i>μ</i><sub>r</sub> / 2π</td><td>vo vákuu k = 2·10⁻⁷ N/A²</td></tr>
+        <tr><td>Permeabilita vákua</td><td class="fm"><i>μ</i><sub>0</sub> = 4π·10<sup>−7</sup></td><td>N·A⁻²</td></tr>
+        <tr><td>Prúd</td><td class="fm"><i>I</i> = <i>Q</i> / <i>t</i> = <i>N e v</i> / <i>l</i></td><td></td></tr>
+        <tr><td>Sila na časticu</td><td class="fm"><i>F</i><sub>m</sub> = <i>Q v B</i> sin <i>α</i></td><td>pre e: F = e·v·B</td></tr>
+        <tr><td>Polomer dráhy</td><td class="fm"><i>r</i> = <i>m v</i> / (<i>Q B</i>)</td><td>z F<sub>m</sub> = F<sub>d</sub></td></tr>
+        <tr><td>Dostredivé zrýchlenie</td><td class="fm"><i>a</i><sub>d</sub> = <i>v</i><sup>2</sup>/<i>r</i> = <i>ω</i><sup>2</sup><i>r</i></td><td></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="font-size:0.9rem;color:var(--muted)">Konštanty: <span class="m"><i>e</i> = 1,602·10<sup>−19</sup> C</span>, <span class="m"><i>m</i><sub>e</sub> = 9,1·10<sup>−31</sup> kg</span>, <span class="m"><i>m</i><sub>p</sub> = 1,67·10<sup>−27</sup> kg</span>.</p>
+
+  <div class="tbl">
+    <table>
+      <thead><tr><th>Pravidlo</th><th>Ruka</th><th>Čo kam</th><th>Na čo</th></tr></thead>
+      <tbody>
+        <tr><td>APPR (vodič)</td><td>pravá</td><td>palec = prúd, prsty = indukčné čiary</td><td>smer čiar okolo vodiča</td></tr>
+        <tr><td>APPR (cievka)</td><td>pravá</td><td>prsty = prúd v závitoch, palec = pól S</td><td>póly cievky</td></tr>
+        <tr><td>FPĽR</td><td>ľavá</td><td>prsty = prúd (alebo v kladnej častice), čiary do dlane, palec = F<sub>m</sub></td><td>smer sily</td></tr>
+        <tr><td>FPĽR pre ⊖</td><td>ľavá</td><td>prsty proti smeru v, čiary do dlane, palec = F<sub>m</sub></td><td>sila na elektrón</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 11 -->
+<section class="ch" id="priklady">
+  <span class="eyebrow">Kapitola 11</span>
+  <h2>Príklady na precvičenie</h2>
+  <p>Najprv skús sám, až potom otvor riešenie. Prvé dva príklady sú tie zo zošita, dopočítané do konca.</p>
+
+  <h3>A. Výpočty</h3>
+
+  <div class="ex">
+    <h4>1. Vodič pod uhlom <span class="lvl z">zo zošita</span></h4>
+    <p>Vodič dĺžky 8 cm, ktorým tečie prúd 6 A, je v magnetickom poli s indukciou 2 T. Zviera s indukčnými čiarami uhol 30°. Akou silou naň pole pôsobí?</p>
+    <details><summary>Riešenie</summary><div class="sol">
+      <p><span class="m"><i>B</i> = 2 T, <i>I</i> = 6 A, <i>l</i> = 8 cm = 0,08 m, <i>α</i> = 30°</span></p>
+      <p><span class="m"><i>F</i><sub>m</sub> = <i>B</i> · <i>I</i> · <i>l</i> · sin <i>α</i> = 2 · 6 · 0,08 · sin 30° = 0,96 · 0,5</span></p>
+      <p><span class="ans">F<sub>m</sub> = 0,48 N</span></p>
+    </div></details>
+  </div>
+
+  <div class="ex">
+    <h4>2. Elektrón v magnetickom poli <span class="lvl z">zo zošita</span></h4>
+    <p>Elektrón letí rýchlosťou <span class="m">1 · 10<sup>6</sup> m/s</span> kolmo do magnetického poľa s indukciou 1,0 T. Indukčné čiary vstupujú do tabule (⊗), elektrón letí doprava. <span class="m"><i>m</i><sub>e</sub> = 9,1 · 10<sup>−31</sup> kg</span>, <span class="m"><i>e</i> = −1,602 · 10<sup>−19</sup> C</span>.<br>a) Akým smerom pôsobí F<sub>m</sub>? b) Aká je jej veľkosť? c) Aký je polomer jeho kruhovej trajektórie?</p>
+    <details><summary>Riešenie</summary><div class="sol">
+      <p><strong>a)</strong> Kladná častica: ľavá ruka dlaňou k tebe (⊗ vstupuje do dlane), prsty doprava, palec ukazuje <strong>hore</strong>. Elektrón je záporný, preto je sila opačná: <span class="ans">F<sub>m</sub> smeruje nadol</span> (k stredu kružnice, viď obrázok v kapitole 8).</p>
+      <p><strong>b)</strong> Náboj je záporný len kvôli tomu, že je to elektrón. Na veľkosť berieme absolútnu hodnotu:</p>
+      <p><span class="m"><i>F</i><sub>m</sub> = |<i>e</i>| · <i>v</i> · <i>B</i> = 1,602 · 10<sup>−19</sup> · 1 · 10<sup>6</sup> · 1,0</span></p>
+      <p><span class="ans">F<sub>m</sub> ≈ 1,6 · 10<sup>−13</sup> N</span></p>
+      <p><strong>c)</strong> <span class="m"><i>r</i> = <i>m</i> · <i>v</i> / (<i>B</i> · |<i>e</i>|) = 9,1 · 10<sup>−31</sup> · 10<sup>6</sup> / (1,0 · 1,602 · 10<sup>−19</sup>) = 9,1 · 10<sup>−25</sup> / 1,602 · 10<sup>−19</sup></span></p>
+      <p><span class="ans">r ≈ 5,7 · 10<sup>−6</sup> m = 5,7 μm</span></p>
+    </div></details>
+  </div>
+
+  <div class="ex">
+    <h4>3. Sila na vodič <span class="lvl">ľahký</span></h4>
+    <p>Vodič dĺžky 50 cm s prúdom 4 A leží kolmo na indukčné čiary poľa s indukciou 0,2 T. a) Aká sila naň pôsobí? b) Aká by bola, keby ho otočili rovnobežne s čiarami?</p>
+    <details><summary>Riešenie</summary><div class="sol">
+      <p>a) <span class="m"><i>F</i><sub>m</sub> = <i>BIl</i> = 0,2 · 4 · 0,5</span> = <span class="ans">0,4 N</span></p>
+      <p>b) Rovnobežne: <span class="m">sin 0° = 0</span>, takže <span class="ans">F<sub>m</sub> = 0 N</span></p>
+    </div></details>
+  </div>
+
+  <div class="ex">
+    <h4>4. Určenie magnetickej indukcie <span class="lvl">ľahký</span></h4>
+    <p>Na vodič dĺžky 20 cm s prúdom 5 A, ktorý je kolmo na indukčné čiary, pôsobí sila 0,03 N. Aká je magnetická indukcia poľa?</p>
+    <details><summary>Riešenie</summary><div class="sol">
+      <p><span class="m"><i>B</i> = <i>F</i><sub>m</sub> / (<i>I</i> · <i>l</i>) = 0,03 / (5 · 0,2) = 0,03 / 1</span></p>
+      <p><span class="ans">B = 0,03 T = 30 mT</span></p>
+    </div></details>
+  </div>
+
+  <div class="ex">
+    <h4>5. Akým prúdom? <span class="lvl">ľahký</span></h4>
+    <p>Vodič dĺžky 0,25 m je v poli 0,4 T a zviera s čiarami uhol 90°. Aký prúd ním musí tiecť, aby naň pôsobila sila 0,5 N?</p>
+    <details><summary>Riešenie</summary><div class="sol">
+      <p><span class="m"><i>I</i> = <i>F</i><sub>m</sub> / (<i>B</i> · <i>l</i>) = 0,5 / (0,4 · 0,25) = 0,5 / 0,1</span></p>
+      <p><span class="ans">I = 5 A</span></p>
+    </div></details>
+  </div>
+
+  <div class="ex">
+    <h4>6. Ampérov zákon <span class="lvl">stredný</span></h4>
+    <p>Dva rovnobežné vodiče vo vzduchu sú od seba 5 cm. Prvým tečie prúd 10 A, druhým 20 A rovnakým smerom. Akou silou na seba pôsobia na dĺžke 2 m? Priťahujú sa, alebo odpudzujú?</p>
+    <details><summary>Riešenie</summary><div class="sol">
+      <p><span class="m"><i>k</i> = 2 · 10<sup>−7</sup> N·A<sup>−2</sup>, <i>d</i> = 0,05 m</span></p>
+      <p><span class="m"><i>F</i><sub>m</sub> = <i>k</i> · <i>I</i><sub>1</sub><i>I</i><sub>2</sub><i>l</i> / <i>d</i> = 2 · 10<sup>−7</sup> · (10 · 20 · 2) / 0,05 = 2 · 10<sup>−7</sup> · 8000</span></p>
+      <p><span class="ans">F<sub>m</sub> = 1,6 · 10<sup>−3</sup> N = 1,6 mN</span>, prúdy majú rovnaký smer, takže sa <strong>priťahujú</strong>.</p>
+    </div></details>
+  </div>
+
+  <div class="ex">
+    <h4>7. Overenie definície ampéra <span class="lvl">stredný</span></h4>
+    <p>Dvoma rovnobežnými vodičmi vo vákuu 1 m od seba tečie rovnaký prúd. Na každý meter dĺžky pôsobí sila 8 · 10<sup>−7</sup> N. Aký prúd tečie vodičmi?</p>
+    <details><summary>Riešenie</summary><div class="sol">
+      <p><span class="m"><i>F</i><sub>m</sub> = <i>k</i> · <i>I</i><sup>2</sup> · <i>l</i> / <i>d</i></span>, takže <span class="m"><i>I</i><sup>2</sup> = <i>F</i><sub>m</sub> · <i>d</i> / (<i>k</i> · <i>l</i>) = 8 · 10<sup>−7</sup> · 1 / (2 · 10<sup>−7</sup> · 1) = 4</span></p>
+      <p><span class="ans">I = 2 A</span></p>
+    </div></details>
+  </div>
+
+  <div class="ex">
+    <h4>8. Protón po kružnici <span class="lvl">stredný</span></h4>
+    <p>Protón (<span class="m"><i>m</i> = 1,67 · 10<sup>−27</sup> kg</span>, <span class="m"><i>Q</i> = 1,602 · 10<sup>−19</sup> C</span>) vletí rýchlosťou <span class="m">2 · 10<sup>5</sup> m/s</span> kolmo do poľa 0,5 T. Aký je polomer jeho dráhy?</p>
+    <details><summary>Riešenie</summary><div class="sol">
+      <p><span class="m"><i>r</i> = <i>m v</i> / (<i>Q B</i>) = 1,67 · 10<sup>−27</sup> · 2 · 10<sup>5</sup> / (1,602 · 10<sup>−19</sup> · 0,5)</span></p>
+      <p><span class="m">= 3,34 · 10<sup>−22</sup> / 8,01 · 10<sup>−20</sup></span></p>
+      <p><span class="ans">r ≈ 4,2 · 10<sup>−3</sup> m = 4,2 mm</span></p>
+    </div></details>
+  </div>
+
+  <div class="ex">
+    <h4>9. Častica pod uhlom <span class="lvl">stredný</span></h4>
+    <p>Elektrón letí rýchlosťou <span class="m">3 · 10<sup>6</sup> m/s</span> pod uhlom 30° k indukčným čiaram poľa 0,2 T. Aká sila naň pôsobí?</p>
+    <details><summary>Riešenie</summary><div class="sol">
+      <p><span class="m"><i>F</i><sub>m</sub> = |<i>e</i>| · <i>v</i> · <i>B</i> · sin <i>α</i> = 1,602 · 10<sup>−19</sup> · 3 · 10<sup>6</sup> · 0,2 · 0,5</span></p>
+      <p><span class="ans">F<sub>m</sub> ≈ 4,8 · 10<sup>−14</sup> N</span></p>
+    </div></details>
+  </div>
+
+  <div class="ex">
+    <h4>10. Hmotnostný spektrometer <span class="lvl">stredný</span></h4>
+    <p>Do spektrometra vletia ióny neónu <sup>20</sup>Ne⁺ a <sup>22</sup>Ne⁺ (rovnaký náboj, rovnaká rýchlosť). Ión <sup>20</sup>Ne⁺ opíše kružnicu s polomerom 20 cm. Aký polomer bude mať <sup>22</sup>Ne⁺?</p>
+    <details><summary>Riešenie</summary><div class="sol">
+      <p>Pri rovnakom <span class="m"><i>v</i>, <i>B</i>, <i>Q</i></span> je <span class="m"><i>r</i> = <i>mv</i>/(<i>QB</i>)</span> priamo úmerné hmotnosti. Hmotnosti sú v pomere 22 : 20 = 1,1.</p>
+      <p><span class="m"><i>r</i><sub>2</sub> = 20 cm · 1,1</span> = <span class="ans">22 cm</span>. Ťažší izotop dopadne ďalej, tak ich rozlíšime.</p>
+    </div></details>
+  </div>
+
+  <div class="ex">
+    <h4>11. Ako sa zmení polomer? <span class="lvl">stredný</span></h4>
+    <p>Ako sa zmení polomer dráhy častice, ak a) zdvojnásobíme rýchlosť, b) zdvojnásobíme magnetickú indukciu, c) namiesto protónu pošleme α-časticu (2× väčší náboj, 4× väčšia hmotnosť) s rovnakou rýchlosťou?</p>
+    <details><summary>Riešenie</summary><div class="sol">
+      <p>Vzorec <span class="m"><i>r</i> = <i>mv</i>/(<i>QB</i>)</span>:</p>
+      <p>a) <span class="ans">r sa zdvojnásobí</span> (v je v čitateli)</p>
+      <p>b) <span class="ans">r sa zmenší na polovicu</span> (B je v menovateli)</p>
+      <p>c) <span class="m"><i>r</i> ∝ <i>m</i>/<i>Q</i> = 4/2 = 2</span>, takže <span class="ans">r bude 2× väčší</span></p>
+    </div></details>
+  </div>
+
+  <h3>B. Pochopenie a smery (bez počítania)</h3>
+
+  <div class="ex">
+    <h4>12. Zlomený magnet</h4>
+    <p>Tyčový magnet zlomíš presne v strede. Čo dostaneš? Môžeš takto získať samostatný severný pól?</p>
+    <details><summary>Riešenie</summary><div class="sol"><p>Dostaneš <strong>dva celé magnety</strong>, každý má pól S aj J. Samostatný pól nezískaš, magnetické póly existujú vždy spolu (magnetický dipól), pretože magnetické vlastnosti majú už samotné atómy.</p></div></details>
+  </div>
+
+  <div class="ex">
+    <h4>13. Kompas</h4>
+    <p>Prečo ukazuje severný (S) koniec strelky kompasu na severný geografický pól, keď sa súhlasné póly odpudzujú?</p>
+    <details><summary>Riešenie</summary><div class="sol"><p>Pri severnom geografickom póle je <strong>južný magnetický pól</strong> Zeme. Severný pól strelky ho priťahuje, lebo nesúhlasné póly sa priťahujú.</p></div></details>
+  </div>
+
+  <div class="ex">
+    <h4>14. Smer indukčných čiar</h4>
+    <p>Zvislým vodičom tečie prúd zdola nahor. Akým smerom sa stáčajú indukčné čiary, keď sa na vodič pozeráš zhora?</p>
+    <details><summary>Riešenie</summary><div class="sol"><p>Prúd ide k tebe (⊙). APPR: palec pravej ruky hore k tebe, prsty sa stáčajú <strong>proti smeru hodinových ručičiek</strong>.</p></div></details>
+  </div>
+
+  <div class="ex">
+    <h4>15. Smer sily na vodič</h4>
+    <p>Vodorovným vodičom tečie prúd zľava doprava. Indukčné čiary vystupujú z nákresu (⊙). Kam pôsobí sila?</p>
+    <details><summary>Riešenie</summary><div class="sol"><p>FPĽR: čiary idú k tebe, aby vstupovali do dlane, ľavú ruku otočíš chrbtom k sebe (dlaň od teba). Prsty doprava, palec potom ukazuje <strong>nadol</strong>. Kontrola: pri ⊗ by sila išla nahor, pri ⊙ je opačne.</p></div></details>
+  </div>
+
+  <div class="ex">
+    <h4>16. Dva vodiče</h4>
+    <p>Dvoma rovnobežnými vodičmi tečú prúdy opačnými smermi. Čo sa stane? A čo ak jeden prúd otočíme?</p>
+    <details><summary>Riešenie</summary><div class="sol"><p>Opačné prúdy: vodiče sa <strong>odpudzujú</strong>. Ak jeden prúd otočíme, tečú rovnakým smerom a <strong>priťahujú sa</strong>.</p></div></details>
+  </div>
+
+  <div class="ex">
+    <h4>17. Elektrón letiaci pozdĺž čiar</h4>
+    <p>Elektrón vletí do magnetického poľa presne v smere indukčných čiar. Ako sa bude pohybovať?</p>
+    <details><summary>Riešenie</summary><div class="sol"><p><span class="m"><i>α</i> = 0°</span>, <span class="m">sin 0° = 0</span>, takže <span class="m"><i>F</i><sub>m</sub> = 0</span>. Elektrón letí <strong>ďalej rovnomerne priamočiaro</strong>, pole ho neovplyvní.</p></div></details>
+  </div>
+
+  <div class="ex">
+    <h4>18. Prečo sa nemení rýchlosť</h4>
+    <p>Prečo magnetické pole nezmení veľkosť rýchlosti nabitej častice, iba smer?</p>
+    <details><summary>Riešenie</summary><div class="sol"><p>Magnetická sila je vždy <strong>kolmá na rýchlosť</strong>. Sila kolmá na pohyb nekoná prácu, takže nemení kinetickú energiu ani veľkosť rýchlosti. Len zakrivuje dráhu (správa sa ako dostredivá sila).</p></div></details>
+  </div>
+
+  <div class="ex">
+    <h4>19. Reproduktor</h4>
+    <p>Prečo v reproduktore membrána kmitá, keď ním tečie striedavý prúd, ale pri jednosmernom prúde by sa len raz vychýlila?</p>
+    <details><summary>Riešenie</summary><div class="sol"><p>Sila <span class="m"><i>F</i><sub>m</sub></span> mení smer spolu so smerom prúdu (FPĽR). Striedavý prúd mení smer neustále, preto sa sila stále otáča a membrána kmitá sem a tam. Tým rozkmitá vzduch a vzniká zvuk. Jednosmerný prúd má stále rovnaký smer, sila tlačí stále rovnako.</p></div></details>
+  </div>
+
+  <div class="ex">
+    <h4>20. Polárna žiara</h4>
+    <p>Prečo vidno polárnu žiaru hlavne v blízkosti pólov a nie na rovníku?</p>
+    <details><summary>Riešenie</summary><div class="sol"><p>Nabité častice slnečného vetra sú zachytené indukčnými čiarami Zeme a pohybujú sa pozdĺž nich. Čiary sa zbiehajú a vstupujú do Zeme pri póloch, takže častice sa dostanú do atmosféry hlavne tam. Pri rovníku idú čiary rovnobežne s povrchom a častice odklonia preč.</p></div></details>
+  </div>
+</section>
+
+<footer>
+  Zdroj: zošit (4 strany, Stacionárne magnetické pole). Doplnené časti sú označené žltým rámčekom. Pravidlo pre cievku overené podľa <a href="https://cs.wikipedia.org/wiki/Amp%C3%A9rovo_pravidlo_prav%C3%A9_ruky">Wikipédie</a> a <a href="http://fyzika.jreichl.com/main.article/view/290-magneticke-pole-civky">Encyklopédie fyziky (J. Reichl)</a>.
+</footer>
+
+</div>
+
+</body></html>
